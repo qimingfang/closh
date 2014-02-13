@@ -62,7 +62,7 @@ int main() {
     //                                                    //
     // /////////////////////////////////////////////////////
 
-    printf("hello world");
+    print ("merge conflict?");
 
     // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
     execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
