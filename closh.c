@@ -62,6 +62,8 @@ int main() {
     //                                                    //
     // /////////////////////////////////////////////////////
 
+    print ("merge conflict?");
+
     // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
     execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
     printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
