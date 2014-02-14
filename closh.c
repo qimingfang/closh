@@ -27,6 +27,51 @@ char readChar() {
   return c;
 }
 
+/**
+ * Parallel execution
+ * @param count - how many times to execute
+ * @param cmd - what the command is
+ */
+void parallel_exec(int count, char* cmdTokens[]) {
+  pid_t pid;
+  int counter = 0;
+  while (counter < count) {
+    pid = fork();
+
+    if (pid == 0) {
+      sleep(1);
+      execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
+    } else if (pid < 0) {
+      printf("Fork failed!\n");
+    } else {
+      counter++;
+    }
+  }    
+}
+
+/**
+ * Sequential execution
+ * @param count - how many times to execute
+ * @param cmd - what the cmd is
+ */
+void sequential_exec(int count, char* cmdTokens[]) {
+  int state;
+  pid_t pid;
+  int counter = 0;
+  while (counter < count) {
+    pid = fork();
+
+    if (pid == 0) {
+      execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
+    } else if (pid < 0) {
+      printf("Fork failed!\n");
+    } else {
+      waitpid(pid, &state, WNOHANG);
+      counter++;
+    }
+  }    
+}
+
 // main method - program entry point
 int main() {
   char cmd[81]; // array of chars (a string)
@@ -54,7 +99,6 @@ int main() {
     } while (timeout < 0 || timeout > 9);
     // end parsing code
     
-
     ////////////////////////////////////////////////////////
     //                                                    //
     // TODO: use cmdTokens, count, parallel, and timeout  //
@@ -62,13 +106,13 @@ int main() {
     //                                                    //
     // /////////////////////////////////////////////////////
 
-    print ("merge conflict?");
+    if (parallel) {
+      parallel_exec(count, cmdTokens);
+    } else {
+      sequential_exec(count, cmdTokens);
+    } 
 
     // just executes the given command once - REPLACE THIS CODE WITH YOUR OWN
-    execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
-    printf("Can't execute %s\n", cmdTokens[0]); // only reached if running the program failed
     exit(1);
-
   }
 }
-
