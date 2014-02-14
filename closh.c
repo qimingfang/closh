@@ -35,11 +35,15 @@ char readChar() {
 void parallel_exec(int count, char* cmdTokens[]) {
   pid_t pid;
   int counter = 0;
+  int j = 0;
   while (counter < count) {
     pid = fork();
 
     if (pid == 0) {
-      sleep(1);
+      for (; j<100; j++) {
+        printf ("%d\n", j);
+        sleep(1);
+      }
       execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
     } else if (pid < 0) {
       printf("Fork failed!\n");
@@ -55,18 +59,22 @@ void parallel_exec(int count, char* cmdTokens[]) {
  * @param cmd - what the cmd is
  */
 void sequential_exec(int count, char* cmdTokens[]) {
-  int state;
   pid_t pid;
   int counter = 0;
+  int j = 0;
   while (counter < count) {
     pid = fork();
 
     if (pid == 0) {
+      for (; j<100; j++) {
+        printf ("%d\n", j);
+        sleep(1);
+      }
       execvp(cmdTokens[0], cmdTokens); // replaces the current process with the given program
     } else if (pid < 0) {
       printf("Fork failed!\n");
     } else {
-      waitpid(pid, &state, WNOHANG);
+      waitpid(pid, NULL, 0);
       counter++;
     }
   }    
